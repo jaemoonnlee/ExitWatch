@@ -27,5 +27,27 @@
             android:layout_height="wrap_content">
         </Spinner>
 
+        <EditText
+            android:id="@+id/editText_device_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="이름(예)사무실서쪽"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/editText_device_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="설명(예)x건물o층??호"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/register_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="신규등록 및 시작" />
+
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

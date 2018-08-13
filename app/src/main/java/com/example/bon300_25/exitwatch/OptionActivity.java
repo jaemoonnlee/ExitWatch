@@ -1,5 +1,6 @@
 package com.example.bon300_25.exitwatch;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -93,6 +94,9 @@ public class OptionActivity extends AppCompatActivity {
             switch (v.getId()) {
                 case R.id.newDevice:
                     // TODO: 신규등록 액티비티
+                    Intent rd = new Intent(getApplicationContext(), RegisterDeviceActivity.class);
+                    // 플래그 설정 필요
+                    startActivity(rd);
                     break;
                 case R.id.nextProcess:
                     // TODO: 감시 액티비티

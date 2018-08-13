@@ -32,18 +32,11 @@ public interface MyRetrofitService {
     @GET("sawQuery/loadToken")
     Call<Map<String, Object>> loadToken(@Query("mnoStr") String mnoStr);
 
-    // 회원가입
-    @GET("sawQuery/register")
-    Call<Integer> register(@Query("mid") String mid, @Query("pw") String pw,
-                           @Query("nickname") String nickname, @Query("phone") String phone,
-                           @Query("email") String email, @Query("city") String city);
-
     // 로그인
     @GET("sawQuery/signin")
     Call<Map<String, Object>> signin(@Query("mid") String mid, @Query("pw") String pw);
 
-
-    ////////////////////////////삭제 예정////////////////////////////
+    /* ///////////////////////////////////////////////////////////////////////////여기서 */
     // 스냅샷 불러오기
     @GET("sawQuery/loadPic")
     Call<Map<String, Object>> loadPic(@Query("mnoStr") String mnoStr);
@@ -56,4 +49,11 @@ public interface MyRetrofitService {
             @Part("mno") RequestBody mno,
             @Part MultipartBody.Part file
     );
+
+    // 회원가입
+    @GET("sawQuery/register")
+    Call<Integer> register(@Query("mid") String mid, @Query("pw") String pw,
+                           @Query("nickname") String nickname, @Query("phone") String phone,
+                           @Query("email") String email, @Query("city") String city);
+    /* 여기까지//////////////////////////////////////////////////////////////// 삭제 예정 */
 }

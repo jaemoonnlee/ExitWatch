@@ -1,5 +1,6 @@
 package com.example.bon300_25.exitwatch.square;
 
+import com.example.bon300_25.exitwatch.beans.Building;
 import com.example.bon300_25.exitwatch.beans.Device;
 
 import java.util.List;
@@ -16,9 +17,19 @@ import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 public interface DeviceRetrofitService {
+    // show buildings
+    @GET("sawQuery/building/load")
+    Call<List<Building>> showBuildings();
+
     // show device_ids
     @POST("sawQuery/showDevices")
     Call<List<Device>> showDevices(@Query("mnoStr") String mnoStr);
+
+    // register Device
+    @GET("sawQuery/registerDevice")
+    Call<Integer> registerDevice(@Query("d") Device device);
+
+    // TODO: device update
 
     // 스냅샷 불러오기
     @GET("sawQuery/loadSnapshot")

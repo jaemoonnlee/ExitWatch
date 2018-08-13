@@ -1,0 +1,117 @@
+{
+  "project_info": {
+    "project_number": "217356806797",
+    "firebase_url": "https://sensingandwarning.firebaseio.com",
+    "project_id": "sensingandwarning",
+    "storage_bucket": "sensingandwarning.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217356806797:android:e3fdee108803cd47",
+        "android_client_info": {
+          "package_name": "com.example.bon300_25.exit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "217356806797-n2ruuoc9fpnb7o425dltlsl96p0v8qok.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bon300_25.exit",
+            "certificate_hash": "e37758fd691b094a53887e328d006fb7df8a1771"
+          }
+        },
+        {
+          "client_id": "217356806797-njaas50givev69v74jpti5qn6oms2p7o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJ3oK7VhPbmoOAd6_b-Kf9b1QQadlyjB8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "217356806797-njaas50givev69v74jpti5qn6oms2p7o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217356806797:android:55073a441b44cc7e",
+        "android_client_info": {
+          "package_name": "com.example.bon300_25.exitwatch"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "217356806797-njaas50givev69v74jpti5qn6oms2p7o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJ3oK7VhPbmoOAd6_b-Kf9b1QQadlyjB8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217356806797:android:856796523ce611f1",
+        "android_client_info": {
+          "package_name": "com.example.bon300_25.sensingandwarning"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "217356806797-njaas50givev69v74jpti5qn6oms2p7o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJ3oK7VhPbmoOAd6_b-Kf9b1QQadlyjB8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private String mid, pw;
 
 
-    /**
+    /*
      * [MainActivity.class] 개요
      * 1.인터넷 연결 확인
      * 2.권한 관리(sdk version 23 이상인 경우)
@@ -67,13 +67,6 @@ public class MainActivity extends AppCompatActivity {
          */
         sharedPreferences = getSharedPreferences("jaemoon", MODE_PRIVATE);
         load();
-
-
-        /*
-         * 0_1.FCM 런타임 호출
-         * TODO: 무슨 목적으로 쓰는 건지 모르겠다.
-         */
-//        FirebaseMessaging.getInstance().setAutoInitEnabled(true);
 
         /*
          * 1.인터넷 연결 확인

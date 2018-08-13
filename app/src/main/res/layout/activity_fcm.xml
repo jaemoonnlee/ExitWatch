@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".firebase.FCMActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!--<ImageView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/firebase_lockup_400"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"/>-->
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/quickstart_message"
+            android:gravity="center_horizontal"
+            android:id="@+id/informationTextView"/>
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="@dimen/standard_field_width"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/subscribe_to_news"
+            android:id="@+id/subscribeButton"
+            android:layout_marginTop="20dp"/>
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="@dimen/standard_field_width"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/log_token"
+            android:id="@+id/logTokenButton"/>
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

@@ -7,6 +7,13 @@ public class Device {
     private String name;
     private String description;
 
+    public Device(int num1, int num2, String str1, String str2) {
+        this.mno = num1;
+        this.bid = num2;
+        this.name = str1;
+        this.description = str2;
+    }
+
     public int getDevice_id() {
         return device_id;
     }
