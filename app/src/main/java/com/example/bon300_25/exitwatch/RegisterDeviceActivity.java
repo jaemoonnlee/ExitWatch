@@ -14,6 +14,7 @@ import com.example.bon300_25.exitwatch.beans.Building;
 import com.example.bon300_25.exitwatch.beans.Device;
 import com.example.bon300_25.exitwatch.square.DeviceRetrofit;
 
+import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -36,30 +37,6 @@ public class RegisterDeviceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_device);
 
-        // buildings 불러오기
-        /*Call<List<Building>> req = DeviceRetrofit.getInstance().getService().showBuildings();
-        req.enqueue(new Callback<List<Building>>() {
-            @Override
-            public void onResponse(Call<List<Building>> call, Response<List<Building>> response) {
-                if(response.body().size() != 0) {
-                    buildings = new Building[response.body().size()];
-                    buildingNames = new String[response.body().size()];
-
-                    for(int i=0; i<response.body().size(); i++) {
-                        buildings[i] = response.body().get(i);
-                        buildingNames[i] = buildings[i].getBname();
-                    }
-                    emptyBuilding = false;
-                } else {
-                    emptyBuilding = true;
-                }
-            }
-            @Override
-            public void onFailure(Call<List<Building>> call, Throwable t) {
-
-            }
-        });*/
-
         // 장치 이름
         editText_name = (EditText) findViewById(R.id.editText_device_name);
         // 장치 설명
@@ -67,44 +44,67 @@ public class RegisterDeviceActivity extends AppCompatActivity {
         editText_desc = (EditText) findViewById(R.id.editText_device_desc);
         // 건물 선택 스피너(옵션)
         spinnerBid = (Spinner) findViewById(R.id.spinnerForBid);
-        /*if(emptyBuilding) {
-            String[] emptyString = new String[]{"선택할 건물이 없습니다."};
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, emptyString);
-            adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-            spinnerBid.setAdapter(adapter);
-            spinnerBid.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    selectedBid = -1;
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-                    selectedBid = -1;
-                }
-            });
-        } else {
-            // TODO: buildingNames에서 NPE error 발생
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, buildingNames);
-            adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-            spinnerBid.setAdapter(adapter);
-            spinnerBid.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                selectedBid = (Integer) parent.getItemAtPosition(position);
-                    selectedBid = buildings[position].getBid();
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-                    selectedBid = -1;
-                }
-            });
-        }*/
 
         // 등록 버튼
         register_btn = (Button) findViewById(R.id.register_btn);
         register_btn.setOnClickListener(listener);
+
+        // buildings 불러오기
+        // 동기적 호출(prevent NPE error)
+        Call<List<Building>> req = DeviceRetrofit.getInstance().getService().showBuildings();
+        req.enqueue(new Callback<List<Building>>() {
+            @Override
+            public void onResponse(Call<List<Building>> call, Response<List<Building>> response) {
+                int result = response.body().size();
+                if(result != 0) {
+                    buildings = new Building[result];
+                    buildingNames = new String[result];
+
+                    for(int i=0; i<result; i++) {
+                        buildings[i] = response.body().get(i);
+                        buildingNames[i] = buildings[i].getBname();
+                    }
+//                    emptyBuilding = false;
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.support_simple_spinner_dropdown_item, buildingNames);
+                    adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+                    spinnerBid.setAdapter(adapter);
+                    spinnerBid.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                selectedBid = (Integer) parent.getItemAtPosition(position);
+                            selectedBid = buildings[position].getBid();
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                            selectedBid = -1;
+                        }
+                    });
+                } else {
+//                    emptyBuilding = true;
+                    String[] emptyString = new String[]{"선택할 건물이 없습니다."};
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.support_simple_spinner_dropdown_item, emptyString);
+                    adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+                    spinnerBid.setAdapter(adapter);
+                    spinnerBid.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            selectedBid = -1;
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                            selectedBid = -1;
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Building>> call, Throwable t) {
+
+            }
+        });
     }
 
     private View.OnClickListener listener = new View.OnClickListener() {
@@ -116,7 +116,6 @@ public class RegisterDeviceActivity extends AppCompatActivity {
             if(checkBlank())
                 return;
             int mno = getSharedPreferences("jaemoon", MODE_PRIVATE).getInt("MNO", -1);
-            selectedBid = -1;// NPE error 해결하면 삭제할 라인
             Device device = new Device(mno, selectedBid, str_name, str_desc);
             // TODO: 통ㅋ신ㅋ
             Call<Integer> req2 = DeviceRetrofit.getInstance().getService().registerDevice(device);
@@ -140,7 +139,6 @@ public class RegisterDeviceActivity extends AppCompatActivity {
 
                 }
             });
-
         }
     };
 

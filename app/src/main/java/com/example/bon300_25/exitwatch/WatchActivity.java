@@ -248,7 +248,7 @@ public class WatchActivity extends AppCompatActivity implements SensorEventListe
                 RequestBody filePart = RequestBody.create(MediaType.parse("image/*"), mainPicture);
                 MultipartBody.Part file = MultipartBody.Part.createFormData("photo", mainPicture.getName(), filePart);
 
-
+                // TODO: gonna change how to save pics
                 Call<ResponseBody> req = MyRetrofit.getInstance().getService().postImage(descPart, file);
                 req.enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -277,5 +277,18 @@ public class WatchActivity extends AppCompatActivity implements SensorEventListe
         else
             result = b - a;
         return Math.abs(result);
+    }
+
+    @Override
+    protected void onDestroy() {
+        sensorManager.unregisterListener(this);
+        super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        sensorManager.unregisterListener(this);
+        super.onBackPressed();
+        finish();
     }
 }
