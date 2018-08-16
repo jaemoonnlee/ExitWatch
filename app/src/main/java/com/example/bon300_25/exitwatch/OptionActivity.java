@@ -1,6 +1,7 @@
 package com.example.bon300_25.exitwatch;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.bon300_25.exitwatch.beans.Device;
 import com.example.bon300_25.exitwatch.square.DeviceRetrofit;
@@ -25,31 +27,67 @@ public class OptionActivity extends AppCompatActivity {
 
     private Spinner spinnerDevice;
     private Button newDevice, nextProcess;
-    private ArrayList<String> mData = new ArrayList<>();
-    private HashMap<String, Device> devices = new HashMap<>();
+    private Device[] devices;
+    private String[] deviceNames;
+    private int selectedDevice_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_option);
 
-        // 값 불러오기
-        loadDevice();
-
-        // 스피너에 보이기
+        // 스피너
         spinnerDevice = (Spinner) findViewById(R.id.spinnerForDevice);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, mData);
-        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        spinnerDevice.setAdapter(adapter);
-        spinnerDevice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        int mno = getSharedPreferences("jaemoon", MODE_PRIVATE).getInt("MNO", -1);
+        String mnoStr = "" + mno;
+        Call<List<Device>> req =  DeviceRetrofit.getInstance().getService().showDevices(mnoStr);
+        req.enqueue(new Callback<List<Device>>() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // TODO: 선택된 device로 watch 실행
-                String str1 = (String) parent.getItemAtPosition(position);
+            public void onResponse(Call<List<Device>> call, Response<List<Device>> response) {
+                int result = response.body().size();
+                if(result != 0) {
+                    devices = new Device[result];
+                    deviceNames = new String[result];
+
+                    for(int i=0; i<result; i++) {
+                        devices[i] = response.body().get(i);
+                        deviceNames[i] = devices[i].getName();
+                    }
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.support_simple_spinner_dropdown_item, deviceNames);
+                    adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+                    spinnerDevice.setAdapter(adapter);
+                    spinnerDevice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            selectedDevice_id = devices[position].getDevice_id();
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                            selectedDevice_id = -1;
+                        }
+                    });
+                } else {
+                    String[] emptyString = new String[]{"장치를 신규 등록 하세요!"};
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.support_simple_spinner_dropdown_item, emptyString);
+                    adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+                    spinnerDevice.setAdapter(adapter);
+                    spinnerDevice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            selectedDevice_id = -1;
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                            selectedDevice_id = -1;
+                        }
+                    });
+                }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onFailure(Call<List<Device>> call, Throwable t) {
 
             }
         });
@@ -60,48 +98,40 @@ public class OptionActivity extends AppCompatActivity {
         nextProcess.setOnClickListener(mlistener);
     }
 
-    // DB통신 메소드
-    private void loadDevice() {
-        int mno = getSharedPreferences("jaemoon", MODE_PRIVATE).getInt("MNO", -1);
-        String mnoStr = "" + mno;
-        Call<List<Device>> req =  DeviceRetrofit.getInstance().getService().showDevices(mnoStr);
-        req.enqueue(new Callback<List<Device>>() {
-            @Override
-            public void onResponse(Call<List<Device>> call, Response<List<Device>> response) {
-                List<Device> list = response.body();
-                if(list.isEmpty()) {
-                    mData.add("신규 등록 하세요!");
-                }
-                for(int i=0; i<list.size(); i++) {
-                    Log.d("확인"+i, list.get(i).getName());
-                    mData.add(list.get(i).getName());
-                    devices.put(list.get(i).getName(), list.get(i));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Device>> call, Throwable t) {
-
-            }
-        });
-
-    }
-
     // 버튼 리스너
     private View.OnClickListener mlistener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.newDevice:
-                    // TODO: 신규등록 액티비티
                     Intent rd = new Intent(getApplicationContext(), RegisterDeviceActivity.class);
-                    // 플래그 설정 필요
                     startActivity(rd);
                     break;
                 case R.id.nextProcess:
-                    // TODO: 감시 액티비티
+                    if(selectedCheck()) {
+                        saveDeviceID(selectedDevice_id);
+                        // TODO: 선택된 device_id로 감시 시작
+                        Intent wa = new Intent(getApplicationContext(), WatchActivity.class);
+                        // TODO: 플래그 설정 필요??
+                        startActivity(wa);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "현재 장치 이름을 선택하세요.", Toast.LENGTH_SHORT).show();
+                    }
                     break;
             }
         }
     };
+
+    private boolean selectedCheck() {
+        if(selectedDevice_id == -1)
+            return false;
+        else
+            return true;
+    }
+
+    private void saveDeviceID(int num) {
+        SharedPreferences.Editor editor = getSharedPreferences("jaemoon", MODE_PRIVATE).edit();
+        editor.putInt("DEVICE_ID", num);
+        editor.apply();
+    }
 }

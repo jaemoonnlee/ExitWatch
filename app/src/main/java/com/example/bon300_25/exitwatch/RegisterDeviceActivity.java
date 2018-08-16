@@ -1,5 +1,7 @@
 package com.example.bon300_25.exitwatch;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,10 +13,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.bon300_25.exitwatch.beans.Building;
-import com.example.bon300_25.exitwatch.beans.Device;
 import com.example.bon300_25.exitwatch.square.DeviceRetrofit;
 
-import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -30,7 +30,6 @@ public class RegisterDeviceActivity extends AppCompatActivity {
     private int selectedBid;
     private Building[] buildings;
     private String[] buildingNames;
-    private boolean emptyBuilding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +49,6 @@ public class RegisterDeviceActivity extends AppCompatActivity {
         register_btn.setOnClickListener(listener);
 
         // buildings 불러오기
-        // 동기적 호출(prevent NPE error)
         Call<List<Building>> req = DeviceRetrofit.getInstance().getService().showBuildings();
         req.enqueue(new Callback<List<Building>>() {
             @Override
@@ -64,7 +62,6 @@ public class RegisterDeviceActivity extends AppCompatActivity {
                         buildings[i] = response.body().get(i);
                         buildingNames[i] = buildings[i].getBname();
                     }
-//                    emptyBuilding = false;
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.support_simple_spinner_dropdown_item, buildingNames);
                     adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
                     spinnerBid.setAdapter(adapter);
@@ -81,7 +78,6 @@ public class RegisterDeviceActivity extends AppCompatActivity {
                         }
                     });
                 } else {
-//                    emptyBuilding = true;
                     String[] emptyString = new String[]{"선택할 건물이 없습니다."};
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.support_simple_spinner_dropdown_item, emptyString);
                     adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
@@ -110,22 +106,20 @@ public class RegisterDeviceActivity extends AppCompatActivity {
     private View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            // TODO: device_id, mno(, bid)는 자동(?) 나머지 name, description을 업로드
             str_name = editText_name.getText().toString();
             str_desc = editText_desc.getText().toString();
             if(checkBlank())
                 return;
             int mno = getSharedPreferences("jaemoon", MODE_PRIVATE).getInt("MNO", -1);
-            Device device = new Device(mno, selectedBid, str_name, str_desc);
-            // TODO: 통ㅋ신ㅋ
-            Call<Integer> req2 = DeviceRetrofit.getInstance().getService().registerDevice(device);
+            Call<Integer> req2 = DeviceRetrofit.getInstance().getService().registerDevice(mno, selectedBid, str_name, str_desc);
             req2.enqueue(new Callback<Integer>() {
                 @Override
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
-                    switch (response.body()) {
-                        case 1:// 등록 성공
-                            // TODO: 센싱 시작
-                            // TODO: 플래그 뉴! 원!
+                    switch (response.body().intValue()) {
+                        case 1:// 등록 성공(장치 선택으로 돌아감)
+                            Intent oa = new Intent(getApplicationContext(), OptionActivity.class);
+                            oa.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(oa);
                             break;
                         case 0:// 등록 실패
                             break;

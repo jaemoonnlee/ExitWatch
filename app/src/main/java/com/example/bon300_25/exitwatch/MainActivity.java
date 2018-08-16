@@ -243,10 +243,9 @@ public class MainActivity extends AppCompatActivity {
                                     // 필요한 정보: mno(사진 저장), nickname(표시)
                                     save(mno, nickname);
 
-                                    Intent ps = new Intent(getApplicationContext(), OptionActivity.class);
-                                    // TODO: 플래그 설정 필요
-//                                    ps.setFlags();
-                                    startActivity(ps);
+                                    Intent oa = new Intent(getApplicationContext(), OptionActivity.class);
+                                    oa.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(oa);
                                 } else {
                                     Toast.makeText(getApplicationContext(), "아이디 혹은 비밀번호가 잘못됐습니다.", Toast.LENGTH_SHORT);
                                 }

@@ -26,8 +26,9 @@ public interface DeviceRetrofitService {
     Call<List<Device>> showDevices(@Query("mnoStr") String mnoStr);
 
     // register Device
+    // @Query 객체 단위로 데이터를 보낼 수 없다.
     @GET("sawQuery/registerDevice")
-    Call<Integer> registerDevice(@Query("d") Device device);
+    Call<Integer> registerDevice(@Query("mno") int num1, @Query("bid") int num2, @Query("name") String str1, @Query("description") String str2);
 
     // TODO: device update
 

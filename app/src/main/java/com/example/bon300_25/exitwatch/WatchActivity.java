@@ -15,6 +15,7 @@ import android.view.SurfaceView;
 
 import com.example.bon300_25.exitwatch.firebase.RequestNotification;
 import com.example.bon300_25.exitwatch.firebase.SendNotificationModel;
+import com.example.bon300_25.exitwatch.square.DeviceRetrofit;
 import com.example.bon300_25.exitwatch.square.FcmRetrofit;
 import com.example.bon300_25.exitwatch.square.MyRetrofit;
 
@@ -23,6 +24,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -73,7 +75,7 @@ public class WatchActivity extends AppCompatActivity implements SensorEventListe
         setContentView(R.layout.activity_watch);
 
         // FCM 토큰 저장
-        int mno = getSharedPreferences("appData", MODE_PRIVATE).getInt("MNO", -1);
+        int mno = getSharedPreferences("jaemoon", MODE_PRIVATE).getInt("MNO", -1);
         String mnoStr = "" + mno;
         Call<Map<String, Object>> req = MyRetrofit.getInstance().getService().loadToken(mnoStr);
         req.enqueue(new Callback<Map<String, Object>>() {
@@ -172,7 +174,7 @@ public class WatchActivity extends AppCompatActivity implements SensorEventListe
                     SendNotificationModel sendNotificationModel = new SendNotificationModel("감지기", "check your snapshot!");
                     RequestNotification requestNotification = new RequestNotification();
                     requestNotification.setSendNotificationModel(sendNotificationModel);
-                    //token is id , whom you want to send notification ,
+                    //token is id, whom you want to send notification
                     requestNotification.setToken(token);
                     Call<ResponseBody> req = FcmRetrofit.getInstance().getService().send(requestNotification);
                     req.enqueue(new Callback<ResponseBody>() {
@@ -241,15 +243,14 @@ public class WatchActivity extends AppCompatActivity implements SensorEventListe
                 camera1.startPreview();
 
                 // 2.DB 저장
-                int mno = getSharedPreferences("appData", MODE_PRIVATE).getInt("MNO", -1);
-                String mnoStr = "" + mno;
+                int device_id = getSharedPreferences("jaemoon", MODE_PRIVATE).getInt("DEVICE_ID", -1);
+                String device_idStr = "" + device_id;
                 // retrofit + multipart
-                RequestBody descPart = RequestBody.create(MultipartBody.FORM, mnoStr);
+                RequestBody descPart = RequestBody.create(MultipartBody.FORM, device_idStr);
                 RequestBody filePart = RequestBody.create(MediaType.parse("image/*"), mainPicture);
                 MultipartBody.Part file = MultipartBody.Part.createFormData("photo", mainPicture.getName(), filePart);
 
-                // TODO: gonna change how to save pics
-                Call<ResponseBody> req = MyRetrofit.getInstance().getService().postImage(descPart, file);
+                Call<ResponseBody> req = DeviceRetrofit.getInstance().getService().uploadSnapshot(descPart, file);
                 req.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -257,14 +258,11 @@ public class WatchActivity extends AppCompatActivity implements SensorEventListe
                     }
 
                     @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                    }
+                    public void onFailure(Call<ResponseBody> call, Throwable t) { }
                 });
             } catch (Exception error) {
                 Log.d("failure","Image could not be saved\n"+error.getMessage());
             } finally {
-                // TODO: 센서 리스너 재등록
                 sensorManager.registerListener(sensorEventListener, gyroscope, DELAY);
             }
         }

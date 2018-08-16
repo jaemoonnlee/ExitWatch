@@ -53,4 +53,12 @@ public class Device {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return "MNO: " + this.mno + ", "
+                + "BID: " + this.bid + ", "
+                + "NAME: " + this.name + ", "
+                + "DESC: " + this.description + ".";
+    }
 }
