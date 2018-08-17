@@ -34,7 +34,7 @@ public interface DeviceRetrofitService {
 
     // 스냅샷 불러오기
     @GET("sawQuery/loadSnapshot")
-    Call<Map<String, Object>> loadSnapshot(@Query("mnoStr") String mnoStr);
+    Call<Map<String, Object>> loadSnapshot(@Query("loadSnapshot") String device_idStr);
 
     // 사진 DB 저장 Multipart 이용
     // @Headers("Content-Type: application/json")
