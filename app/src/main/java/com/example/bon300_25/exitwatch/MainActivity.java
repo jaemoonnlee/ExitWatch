@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText id, password;
     private String mid, pw;
 
+    private BackPressCloseHandler backPressCloseHandler;
 
     /*
      * [MainActivity.class] 개요
@@ -122,6 +123,8 @@ public class MainActivity extends AppCompatActivity {
         btnSign = (Button) findViewById(R.id.btnSign);
         btnSign.setOnClickListener(join);
 
+        // 뒤로 버튼 핸들러
+        backPressCloseHandler = new BackPressCloseHandler(this);
     }// end of onCreate()
 
     /*
@@ -290,5 +293,11 @@ public class MainActivity extends AppCompatActivity {
         saveLoginData = sharedPreferences.getBoolean("SAVE_LOGIN_DATA", false);
         mid = sharedPreferences.getString("ID", "");
         pw = sharedPreferences.getString("PWD", "");
+    }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        backPressCloseHandler.onBackPressed();
     }
 }
