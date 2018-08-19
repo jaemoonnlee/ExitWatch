@@ -114,7 +114,7 @@ public class OptionActivity extends AppCompatActivity {
                         saveDeviceID(selectedDevice_id);
                         // TODO: 선택된 device_id로 감시 시작
                         Intent wa = new Intent(getApplicationContext(), WatchActivity.class);
-                        // TODO: 플래그 설정 필요??
+                        wa.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(wa);
                     } else {
                         Toast.makeText(getApplicationContext(), "현재 장치 이름을 선택하세요.", Toast.LENGTH_SHORT).show();
