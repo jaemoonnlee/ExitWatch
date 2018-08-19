@@ -10,4 +10,13 @@
         android:id="@+id/preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    <ToggleButton
+        android:id="@+id/toggleOnWorking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOff="시작"
+        android:textOn="종료"
+        android:layout_alignRight="@id/preview"
+        android:layout_centerVertical="true"
+        />
 </RelativeLayout>

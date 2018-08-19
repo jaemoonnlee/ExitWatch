@@ -18,7 +18,6 @@ package com.example.bon300_25.exitwatch.firebase;
 
 import android.util.Log;
 
-
 import com.example.bon300_25.exitwatch.cookies.MySharedPreferences;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;

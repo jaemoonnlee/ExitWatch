@@ -6,12 +6,14 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.ToggleButton;
 
 import com.example.bon300_25.exitwatch.firebase.RequestNotification;
 import com.example.bon300_25.exitwatch.firebase.SendNotificationModel;
@@ -24,7 +26,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -70,6 +71,12 @@ public class WatchActivity extends AppCompatActivity implements SensorEventListe
     private String token = "";
     private String device_name;
 
+    // 뒤로 두번
+    private BackPressCloseHandler backPressCloseHandler;
+
+    // 시작&종료 토글버튼
+    private ToggleButton toggleButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +110,7 @@ public class WatchActivity extends AppCompatActivity implements SensorEventListe
         sensorEventListener = this;
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         gyroscope = sensorManager.getDefaultSensor(gyro_sensor);
-        sensorManager.registerListener(sensorEventListener, gyroscope, DELAY);
+//        sensorManager.registerListener(sensorEventListener, gyroscope, DELAY);
 
         // for camera
         surfaceView = (SurfaceView) findViewById(R.id.preview);
@@ -139,7 +146,27 @@ public class WatchActivity extends AppCompatActivity implements SensorEventListe
                 camera.release();
             }
         });
-    }
+
+        // 뒤로 버튼 핸들러
+        backPressCloseHandler = new BackPressCloseHandler(this);
+
+        // 토글버튼
+        toggleButton = (ToggleButton) findViewById(R.id.toggleOnWorking);
+        toggleButton.setOnClickListener(myListener);
+    }// end of onCreate()
+
+    private View.OnClickListener myListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if(toggleButton.isChecked()) {
+                // 시작(리스너 등록)
+                sensorManager.registerListener(sensorEventListener, gyroscope, DELAY);
+            } else {
+                // 종료(리스너 해제)
+                sensorManager.unregisterListener(sensorEventListener);
+            }
+        }
+    };
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -282,14 +309,17 @@ public class WatchActivity extends AppCompatActivity implements SensorEventListe
 
     @Override
     protected void onDestroy() {
-        sensorManager.unregisterListener(this);
+        sensorManager.unregisterListener(sensorEventListener);
         super.onDestroy();
     }
 
     @Override
     public void onBackPressed() {
-        sensorManager.unregisterListener(this);
+        if(toggleButton.isChecked()) {
+            toggleButton.setChecked(false);
+            sensorManager.unregisterListener(sensorEventListener);
+        }
         super.onBackPressed();
-        finish();
+        backPressCloseHandler.onBackPressed();
     }
 }
