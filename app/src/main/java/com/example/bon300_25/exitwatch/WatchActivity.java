@@ -68,12 +68,15 @@ public class WatchActivity extends AppCompatActivity implements SensorEventListe
 
     // variable for FCM
     private String token = "";
+    private String device_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watch);
 
+        // 선택 중인 디바이스 이름
+        device_name = getSharedPreferences("jaemoon", MODE_PRIVATE).getString("DEVICE_NAME", "이름없음");
         // FCM 토큰 저장
         int mno = getSharedPreferences("jaemoon", MODE_PRIVATE).getInt("MNO", -1);
         String mnoStr = "" + mno;
@@ -89,6 +92,7 @@ public class WatchActivity extends AppCompatActivity implements SensorEventListe
                     e.printStackTrace();
                 }
                 token = to;
+                Log.d("토큰확인", token);
             }
 
             @Override
@@ -170,8 +174,7 @@ public class WatchActivity extends AppCompatActivity implements SensorEventListe
                     // 사진을 찍는 동안 센서 리스너 해제
                     sensorManager.unregisterListener(this);
 
-                    // TODO: 3.PUSH to client who has same MNO
-                    SendNotificationModel sendNotificationModel = new SendNotificationModel("감지기", "check your snapshot!");
+                    SendNotificationModel sendNotificationModel = new SendNotificationModel("떨림 감지", "[" + device_name + "]감지기");
                     RequestNotification requestNotification = new RequestNotification();
                     requestNotification.setSendNotificationModel(sendNotificationModel);
                     //token is id, whom you want to send notification

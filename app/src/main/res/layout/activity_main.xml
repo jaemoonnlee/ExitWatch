@@ -21,11 +21,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
+        <!--<ImageView
             android:id="@+id/imageView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/observe_camera_256" />
+            app:srcCompat="@drawable/observe_camera_256" />-->
 
         <TextView
             android:id="@+id/textView"

@@ -30,6 +30,7 @@ public class OptionActivity extends AppCompatActivity {
     private Device[] devices;
     private String[] deviceNames;
     private int selectedDevice_id;
+    private String selectedDevice_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,7 @@ public class OptionActivity extends AppCompatActivity {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                             selectedDevice_id = devices[position].getDevice_id();
+                            selectedDevice_name = devices[position].getName();
                         }
 
                         @Override
@@ -132,6 +134,7 @@ public class OptionActivity extends AppCompatActivity {
     private void saveDeviceID(int num) {
         SharedPreferences.Editor editor = getSharedPreferences("jaemoon", MODE_PRIVATE).edit();
         editor.putInt("DEVICE_ID", num);
+        editor.putString("DEVICE_NAME", selectedDevice_name);
         editor.apply();
     }
 }
